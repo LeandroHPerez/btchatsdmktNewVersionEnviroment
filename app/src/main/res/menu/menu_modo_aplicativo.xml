@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="br.edu.ifsp.scl.btchatsdmkt.MainActivity">
+    <!--Modo servidor -->
+    <item
+            android:id="@+id/modoServidorMenuItem"
+            android:title="Modo servidor"
+            app:showAsAction="never"/>
+    <!--Modo cliente -->
+    <item
+            android:id="@+id/modoClienteMenuItem"
+            android:title="Modo cliente"
+            app:showAsAction="never"/>
+</menu>

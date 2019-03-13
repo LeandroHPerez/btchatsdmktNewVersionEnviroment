@@ -23,9 +23,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
-
+import br.edu.ifsp.scl.btchatsdmkt.BluetoothSingleton.Constantes.ATIVA_DESCOBERTA_BLUETOOTH
+import br.edu.ifsp.scl.btchatsdmkt.BluetoothSingleton.Constantes.CODIGO_CLIENTE
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
+import br.edu.ifsp.scl.btchatsdmkt.BluetoothSingleton.Constantes.CODIGO_SERVIDOR
+import br.edu.ifsp.scl.btchatsdmkt.BluetoothSingleton.Constantes.TEMPO_DESCOBERTA_SERVICO_BLUETOOTH
+import br.edu.ifsp.scl.btchatsdmkt.BluetoothSingleton.adaptadorBt
 
 class MainActivity : AppCompatActivity() {
     // Referências para as threads filhas
@@ -70,7 +74,17 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
+
+
+        //verificar e ajustar se Modo Servidor ou Modo Cliente
+        verificarModoAtuacaoDispositivo()
+
+
     }
+
+
+
+
 
     private fun pegandoAdaptadorBt() {
         BluetoothSingleton.adaptadorBt = BluetoothAdapter.getDefaultAdapter()
@@ -85,6 +99,7 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
     }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == BluetoothSingleton.Constantes.REQUER_PERMISSOES_LOCALIZACAO) {
@@ -123,6 +138,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    /*trecho não mais necessário
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         var retorno = false
         when (item?.itemId) {
@@ -153,6 +169,7 @@ class MainActivity : AppCompatActivity() {
         }
         return retorno
     }
+    trecho não mais necessário */
 
     private fun registraReceiver() {
         eventosBtReceiver = eventosBtReceiver?: EventosBluetoothReceiver(this)
@@ -267,6 +284,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
     private fun toast(mensagem: String) = Toast.makeText(this,mensagem, Toast.LENGTH_SHORT).show()
 
     inner class TelaPrincipalHandler: Handler() {
@@ -284,4 +303,35 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+
+
+    private fun verificarModoAtuacaoDispositivo() {
+
+        val MODO = intent.action
+
+        if (MODO == CODIGO_CLIENTE) {
+            toast("Configurando modo cliente")
+
+            // (Re)Inicializando a Lista de dispositivos encontrados
+            listaBtsEncontrados = mutableListOf()
+
+            registraReceiver()
+
+            BluetoothSingleton.adaptadorBt?.startDiscovery()
+
+            exibirAguardeDialog("Procurando dispositivos Bluetooth", 0)
+        } else {
+            if (MODO == CODIGO_SERVIDOR) {
+                toast("Configurando modo servidor")
+
+                val descobertaIntent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE)
+                descobertaIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, TEMPO_DESCOBERTA_SERVICO_BLUETOOTH)
+                startActivityForResult(descobertaIntent, BluetoothSingleton.Constantes.ATIVA_DESCOBERTA_BLUETOOTH)
+            }
+        }
+
+
+    }
+
 }

@@ -133,12 +133,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    /* trecho não mais necessário - gosto de manter comentado para caso eu venha a estudar novamente o código em um futoro distante
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_modo_aplicativo,menu)
         return true
     }
+    Fim trecho não mais necessário - gosto de manter comentado para caso eu venha a estudar novamente o código em um futoro distante */
 
-    /*trecho não mais necessário
+    /* trecho não mais necessário - gosto de manter comentado para caso eu venha a estudar novamente o código em um futoro distante
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         var retorno = false
         when (item?.itemId) {
@@ -169,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         }
         return retorno
     }
-    trecho não mais necessário */
+    Fim trecho não mais necessário - gosto de manter comentado para caso eu venha a estudar novamente o código em um futoro distante*/
 
     private fun registraReceiver() {
         eventosBtReceiver = eventosBtReceiver?: EventosBluetoothReceiver(this)

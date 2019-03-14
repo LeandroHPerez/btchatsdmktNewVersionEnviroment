@@ -5,6 +5,7 @@ import br.edu.ifsp.scl.btchatsdmkt.BluetoothSingleton.Constantes.MENSAGEM_DESCON
 import br.edu.ifsp.scl.btchatsdmkt.BluetoothSingleton.Constantes.MENSAGEM_TEXTO
 import br.edu.ifsp.scl.btchatsdmkt.BluetoothSingleton.inputStream
 import br.edu.ifsp.scl.btchatsdmkt.BluetoothSingleton.outputStream
+import org.json.JSONObject
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
@@ -24,8 +25,22 @@ class ThreadComunicacao(val mainActivity: MainActivity) : Thread() {
             while (true) {
                 // Lê o InputStream e armazena numa String
                 mensagem = inputStream?.readUTF()
-                // Aciona o Handler da Tela Principal para mostrar a String recebida no ListView
-                mainActivity.mHandler?.obtainMessage(MENSAGEM_TEXTO, nome + ": " + mensagem)?.sendToTarget()
+
+
+                //Novo trecho para tratar remetente personalizado
+                val jsonMensagemRetornada = JSONObject("${mensagem}")
+
+                if (jsonMensagemRetornada.get("nomeremetente") != "null") {
+                    nome = jsonMensagemRetornada.get("nomeremetente").toString()
+                }
+
+                // Aciona o Handler da Tela Principal para mostrar a String recebida no ListView - alterado para tratar remetente personalizado
+                mainActivity.mHandler?.obtainMessage(MENSAGEM_TEXTO, nome + ": " + "${jsonMensagemRetornada.get("mensagem")}")?.sendToTarget()
+                //mainActivity.mHandler?.obtainMessage(MENSAGEM_TEXTO, nome + ": " + mensagem)?.sendToTarget()
+                //Fim Novo trecho para tratar remetente personalizado
+
+
+
             }
         } catch (e: IOException) {
             /* Em caso de desconexão pede para o Handler da tela principal mostrar um Toast para o

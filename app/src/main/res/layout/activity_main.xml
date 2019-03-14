@@ -35,6 +35,14 @@
                 android:layout_weight="1"
                 android:onClick="enviarMensagem"
                 android:text="Enviar"/>
+
+        <Button
+                android:id="@+id/btnAlterarRemetente"
+                android:layout_width="0sp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="alterarRemetenteAlertWithEditText"
+                android:text="Alterar Remetente"/>
     </LinearLayout>
 
 </RelativeLayout>

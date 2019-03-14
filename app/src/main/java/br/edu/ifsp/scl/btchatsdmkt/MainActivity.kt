@@ -22,6 +22,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.Toast
 import br.edu.ifsp.scl.btchatsdmkt.BluetoothSingleton.Constantes.ATIVA_DESCOBERTA_BLUETOOTH
 import br.edu.ifsp.scl.btchatsdmkt.BluetoothSingleton.Constantes.CODIGO_CLIENTE
@@ -51,6 +52,9 @@ class MainActivity : AppCompatActivity() {
 
     // Dialog para aguardar conexões e busca
     private var aguardeDialog: ProgressDialog? = null
+
+    //Variável para guardar o nome do remetende escolhido pelo usuário
+    var nomeDoRemetente: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -271,13 +275,26 @@ class MainActivity : AppCompatActivity() {
     fun enviarMensagem(view: View) {
         if (view == enviarBt) {
             val mensagem = mensagemEditText.text.toString()
+
             mensagemEditText.setText("")
 
             try {
                 if (BluetoothSingleton.outputStream != null) {
-                    BluetoothSingleton.outputStream?.writeUTF(mensagem)
 
-                    historicoAdapter?.add("Eu: ${mensagem}")
+                    //val mensagemComRemetente: String = "remetente: " + nomeDoRemetente + " / " + "mensagem: " + mensagem
+
+                    val mensagemComRemetente: String = "{\"nomeremetente\":\"${nomeDoRemetente}\", \"mensagem\":${mensagem}}"
+
+                    BluetoothSingleton.outputStream ?.writeUTF(mensagemComRemetente)
+
+                    if(nomeDoRemetente == null) {
+                        historicoAdapter?.add("Eu: ${mensagem}")
+                    } else {
+                        historicoAdapter?.add("${nomeDoRemetente}: ${mensagem}")
+                    }
+
+
+
                     historicoAdapter?.notifyDataSetChanged()
                 }
             } catch (e: IOException) {
@@ -336,5 +353,28 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+
+
+
+
+    fun alterarRemetenteAlertWithEditText(view: View) {
+        val builder = AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        builder.setTitle("Alterar remetente")
+        val dialogLayout = inflater.inflate(R.layout.alert_dialog_with_edittext, null)
+        val editText  = dialogLayout.findViewById<EditText>(R.id.editTextDoAlert)
+        builder.setView(dialogLayout)
+        //builder.setPositiveButton("OK") { dialogInterface, i -> Toast.makeText(applicationContext, "EditText is " + editText.text.toString(), Toast.LENGTH_SHORT).show() }
+
+        builder.setPositiveButton("OK") { dialogInterface, i -> nomeDoRemetente = editText!!.text.toString() }
+        //Toast.makeText(applicationContext, "Remetente é " + nomeDoRemetente, Toast.LENGTH_SHORT).show()
+
+        builder.show()
+    }
+
+
+
+
 
 }
